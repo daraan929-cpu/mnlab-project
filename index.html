@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MNLAB | طباعة ثلاثية الأبعاد</title>
+    <link rel="stylesheet" href="styles.css?v=2">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js for 3D Previews -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.162.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.162.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <span class="gradient-text">MNLAB</span> 3D
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home">الرئيسية</a></li>
+                    <li><a href="#services">خدماتنا</a></li>
+                    <li><a href="#gallery">معرض الأعمال</a></li>
+                    <li><a href="#contact">تواصل معنا</a></li>
+                </ul>
+            </nav>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1 class="animate-up">حول أفكارك إلى <span class="gradient-text">واقع ملموس</span></h1>
+                <p class="animate-up delay-1">نقدم في MNLAB أفضل خدمات الطباعة ثلاثية الأبعاد بجودة احترافية ودقة عالية للنماذج الأولية والمنتجات النهائية.</p>
+                <div class="hero-btns animate-up delay-2">
+                    <a href="#contact" class="btn btn-primary">اطلب طباعة الآن</a>
+                    <a href="#services" class="btn btn-secondary">استكشف خدماتنا</a>
+                </div>
+                
+                <!-- QR Code for Mobile Link -->
+                <div class="hero-qr animate-up delay-2" style="margin-top: 30px; display: flex; align-items: center; gap: 15px; background: rgba(0,242,254,0.05); padding: 15px; border-radius: 15px; border: 1px solid rgba(0,242,254,0.2); max-width: 380px;">
+                    <img id="hero-qr-img" src="" alt="Mobile QR Code" style="width: 70px; height: 70px; border-radius: 8px; background: white; padding: 2px;">
+                    <div>
+                        <h4 style="margin-bottom: 5px; color: var(--accent-1); font-size: 1rem;">متوافق مع الهواتف</h4>
+                        <p style="margin: 0; font-size: 0.85rem; color: var(--text-secondary);">امسح الـ QR لفتح واجهة المنصة بالهاتف بكل سهولة.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image animate-float">
+                <img src="hero-fdm.png" alt="High-End Industrial 3D Printer Printing Complex Part" style="width: 100%; max-width: 600px; border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 242, 254, 0.5); object-fit: cover;">
+            </div>
+        </div>
+        <div class="bg-glow"></div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-title">
+                <h2>خدمات <span class="gradient-text">الطباعة والتصميم</span></h2>
+                <p>نستخدم أحدث التقنيات لضمان جودة استثنائية تلبي تطلعات مشاريعك.</p>
+            </div>
+            
+            <div class="services-grid">
+                <!-- Service 1 -->
+                <div class="service-card reveal">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h3>طباعة ثلاثية الأبعاد (FDM)</h3>
+                    <p>متخصصون في طباعة FDM ذات الجودة العالية بمواد متعددة مثل PLA, ABS, PETG لتلبية كافة احتياجات مشاريعك.</p>
+                    <button class="btn btn-primary w-100 mt-20 order-service-btn" data-service="3d-printing" onclick="window.openModal('3d-printing')" style="margin-top: 20px; padding: 8px 15px; font-size: 0.9rem;">اطلب هذه الخدمة <i class="fas fa-arrow-left"></i></button>
+                </div>
+                
+                <!-- Service 2 -->
+                <div class="service-card reveal delay-1">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-pen-nib"></i>
+                    </div>
+                    <h3>تصميم ونمذجة 3D</h3>
+                    <p>تحويل أفكارك ورسوماتك إلى نماذج ثلاثية الأبعاد قابلة للطباعة والتصنيع.</p>
+                    <button class="btn btn-primary w-100 mt-20 order-service-btn" data-service="3d-design" onclick="window.openModal('3d-design')" style="margin-top: 20px; padding: 8px 15px; font-size: 0.9rem;">اطلب هذه الخدمة <i class="fas fa-arrow-left"></i></button>
+                </div>
+                
+                <!-- Service 3 -->
+                <div class="service-card reveal delay-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <h3>النماذج الأولية السريعة</h3>
+                    <p>تسريع دورة تطوير منتجك من خلال طباعة النماذج الأولية بسرعة وكفاءة عالية للشركات والأفراد.</p>
+                    <button class="btn btn-primary w-100 mt-20 order-service-btn" data-service="rapid-prototyping" onclick="window.openModal('rapid-prototyping')" style="margin-top: 20px; padding: 8px 15px; font-size: 0.9rem;">اطلب هذه الخدمة <i class="fas fa-arrow-left"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Materials Section -->
+    <section id="materials" class="materials">
+        <div class="container">
+            <div class="section-title reveal">
+                <h2>أنواع <span class="gradient-text">مواد الطباعة</span></h2>
+                <p>نستخدم أفضل أنواع البلاستيك الحراري لضمان جودة ومتانة منتجاتك.</p>
+            </div>
+            
+            <div class="services-grid">
+                <!-- Material PLA -->
+                <div class="service-card reveal">
+                    <div class="icon-wrapper">
+                        <i class="fab fa-envira"></i>
+                    </div>
+                    <h3>PLA</h3>
+                    <p>حمض البولي لاكتيك. مادة صديقة للبيئة، تعطي تفاصيل جمالية ودقيقة، ممتازة للنماذج الديكورية والمجسمات الأولية السريعة.</p>
+                </div>
+                
+                <!-- Material ABS -->
+                <div class="service-card reveal delay-1">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>ABS</h3>
+                    <p>مادة شديدة الصلابة ومقاومة للحرارة والصدمات. خيارك الأمثل للقطع الميكانيكية وإكسسوارات وقطع غيار السيارات الاحترافية.</p>
+                </div>
+                
+                <!-- Material PETG -->
+                <div class="service-card reveal delay-2">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-vial"></i>
+                    </div>
+                    <h3>PETG</h3>
+                    <p>مزيج رائع يجمع بين متانة ABS وسهولة طباعة PLA. مقاوم للمواد الكيميائية وللماء، ممتاز للأغطية والعلب والقطع الخارجية.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Lab Section -->
+    <section id="ailab" class="ailab glass-section">
+        <div class="container container-ai">
+            <div class="section-title reveal">
+                <h2>مختبر <span class="gradient-text">الذكاء الاصطناعي 2026</span></h2>
+                <p>اكتشف التقنيات المتطورة التي نستخدمها في تحليل النماذج والتوصيات.</p>
+            </div>
+            
+            <div class="services-grid">
+                
+                <!-- Vision Model -->
+                <div class="service-card ai-card ai-vision-card reveal">
+                    <div class="icon-wrapper">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>الرؤية الحاسوبية (Advanced Vision)</h3>
+                    <p>نظام يعتمد على YOLOv9 و EfficientNet لمعالجة وتحليل تفاصيل المشهد بدقة متناهية.</p>
+                    
+                    <div class="upload-area-mini" onclick="document.getElementById('ai-vision-upload').click()">
+                        <i class="fas fa-image fa-2x" style="color: var(--accent-1); margin-bottom: 10px;"></i>
+                        <p style="font-size: 0.85rem;">ارفع صورة لاختبار المودل الذكي</p>
+                        <input type="file" id="ai-vision-upload" accept="image/*" class="hidden" onchange="runAiVision(this)">
+                    </div>
+                    
+                    <div id="ai-vision-result" style="display: none;"></div>
+                </div>
+
+                <!-- X Algorithm -->
+                <div class="service-card ai-card ai-algo-card reveal delay-1">
+                    <div class="icon-wrapper" style="background: linear-gradient(135deg, var(--accent-3) 0%, #ff00ff 100%);">
+                        <i class="fas fa-infinity"></i>
+                    </div>
+                    <h3>توصيات خوارزمية X</h3>
+                    <p>محرك توصية مدعوم بـ Grok-1 وتقنيات Phoenix لجلب أفضل النماذج المناسبة لك.</p>
+                    
+                    <button class="btn btn-primary w-100" style="background: linear-gradient(90deg, var(--accent-3), #ff00ff);" onclick="runXAlgorithm()">
+                        اكتشف التوصيات <i class="fas fa-magic"></i>
+                    </button>
+
+                    <div id="ai-algo-result" style="display: none;">
+                        <ul id="algo-list" style="list-style: none; padding: 0;"></ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="gallery">
+        <div class="container">
+            <div class="section-title reveal">
+                <h2>معرض <span class="gradient-text">الأعمال</span></h2>
+                <p>نماذج من مشاريعنا ومطبوعاتنا بجودة فائقة.</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="gallery1.png" alt="High Tech 3D Printed Part" class="gallery-img">
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-microchip"></i>
+                        <span>قطع غيار دقيقة</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="gallery2.png" alt="Advanced Architectural Prototype" class="gallery-img">
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-archway"></i>
+                        <span>نماذج معمارية معقدة</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="gallery3.png" alt="Industrial Engineering Model" class="gallery-img">
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-layer-group"></i>
+                        <span>نماذج هندسية متطورة</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=90&w=1200&auto=format&fit=crop" alt="Intricate 3D Printed Hand Prototype" class="gallery-img">
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-robot"></i>
+                        <span>أطراف صناعية ومجسمات طبية</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=90&w=1200&auto=format&fit=crop" alt="Artistic 3D Printed Geometric Sculpture" class="gallery-img">
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-palette"></i>
+                        <span>مجسمات فنية وتصميم إبداعي</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?q=90&w=1200&auto=format&fit=crop" alt="Precision Engineered 3D Tools" class="gallery-img">
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-tools"></i>
+                        <span>أدوات مخصصة وعالية الدقة</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?q=90&w=1200&auto=format&fit=crop" alt="3D Printed Robotics and Drone Components" class="gallery-img">
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-microchip"></i>
+                        <span>الروبوتات وقطع الطائرات المسيرة</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=90&w=1200&auto=format&fit=crop" alt="Custom 3D Printed Electronic Enclosure" class="gallery-img">
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-box-open"></i>
+                        <span>صناديق إلكترونية وهياكل مخصصة</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=90&w=1200&auto=format&fit=crop" alt="Functional 3D Printed Prototype for Testing" class="gallery-img">
+                    <div class="gallery-placeholder">
+                        <i class="fas fa-flask"></i>
+                        <span>نماذج وظيفية للاختبار العملي</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="process" class="process">
+        <div class="container">
+            <div class="section-title reveal">
+                <h2>كيف <span class="gradient-text">نعمل؟</span></h2>
+                <p>خطوات بسيطة وسريعة لتحويل أفكارك إلى واقع ملموس.</p>
+            </div>
+            
+            <div class="process-steps">
+                <div class="step reveal">
+                    <div class="step-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <div class="step-number">1</div>
+                    </div>
+                    <h3>أرسل ملفك</h3>
+                    <p>قم برفع ملف الـ 3D بصيغة STL أو شاركنا فكرتك وسنقوم بتصميمها لك.</p>
+                </div>
+                
+                <div class="step reveal delay-1">
+                    <div class="step-icon">
+                        <i class="fas fa-calculator"></i>
+                        <div class="step-number">2</div>
+                    </div>
+                    <h3>احصل على تسعيرة</h3>
+                    <p>يقوم فريقنا بمراجعة النموذج وإرسال تسعيرة دقيقة ومناسبة مع تحديد موعد التسليم.</p>
+                </div>
+                
+                <div class="step reveal delay-2">
+                    <div class="step-icon">
+                        <i class="fas fa-cogs"></i>
+                        <div class="step-number">3</div>
+                    </div>
+                    <h3>بدء الطباعة</h3>
+                    <p>نبدأ عملية الطباعة باستخدام أحدث التقنيات وأفضل المواد لضمان دقة لا متناهية.</p>
+                </div>
+                
+                <div class="step reveal">
+                    <div class="step-icon">
+                        <i class="fas fa-box-open"></i>
+                        <div class="step-number">4</div>
+                    </div>
+                    <h3>استلم المجسم</h3>
+                    <p>بمجرد الانتهاء، سيتم تغليف المنتج بعناية وشحنه إليك أينما كنت في اليمن.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq">
+        <div class="container">
+            <div class="section-title reveal">
+                <h2>الأسئلة <span class="gradient-text">الشائعة</span></h2>
+                <p>إجابات سريعة لأكثر الاستفسارات شيوعاً لدينا.</p>
+            </div>
+            
+            <div class="faq-accordion">
+                <div class="faq-item reveal">
+                    <div class="faq-question">
+                        <h3>ما هي المواد المتاحة للطباعة؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نقدم مجموعة واسعة من المواد عالية التخصص والجودة مثل PLA, ABS, PETG، بالإضافة إلى الريزن السائل (SLA) المستخدم للمجوهرات والتفاصيل المعقدة جداً.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item reveal delay-1">
+                    <div class="faq-question">
+                        <h3>كم وقتاً يستغرق تنفيذ طلبي؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>تعتمد مدة التنفيذ على حجم وتعقيد المجسم، ولكن بشكل عام تتراوح من 24 إلى 48 ساعة للطباعة المعتادة.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal delay-2">
+                    <div class="faq-question">
+                        <h3>ليس لدي مجسم 3D، هل يمكنكم مساعدتي في التصميم؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>بالتأكيد! يمتلك MNLAB فريقاً من المهندسين والمصممين المحترفين القادرين على تحويل أفكارك ورسوماتك إلى نماذج ثلاثية الأبعاد جاهزة للطباعة والتصنيع.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal">
+                    <div class="faq-question">
+                        <h3>كيف يمكنني توصيل طلبي إليكم أو استلامه؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>يتم رفع الملفات مباشرة عبر موقعنا، وبمجرد اكتمال الطباعة يمكنك استلام المنتج من مقرنا أو طلب شحنه وتوصيله مباشرة إلى باب منزلك في أي مكان في الجمهورية اليمنية.</p>
+                    </div>
+                </div>
+                <div class="faq-item reveal delay-1">
+                    <div class="faq-question">
+                        <h3>ما هو أكبر حجم طباعة لديكم؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نستطيع طباعة قطع ضخمة تصل إلى 1 متر مكعب كقطعة واحدة، كما يمكننا طباعة وتجميع مجسمات أكبر من ذلك بكثير باحترافية تامة لتبدو كقطعة واحدة.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal delay-2">
+                    <div class="faq-question">
+                        <h3>هل تقدمون خدمات ما بعد الطباعة والتلوين؟</h3>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>نعم بكل تأكيد! تشمل خدماتنا الإضافية تنعيم الأسطح (الصنفرة)، المعالجة الكيميائية، والطلاء الاحترافي بألوان مخصصة بناءً على متطلبات مشروعك.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us / Features -->
+    <section id="features" class="features glass-section">
+        <div class="container features-content">
+            <div class="features-text reveal">
+                <h2>لماذا تختار <span class="gradient-text">MNLAB</span>؟</h2>
+                <ul class="feature-list">
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>دقة متناهية</h4>
+                            <p>أجهزة طباعة حديثة تضمن أدق التفاصيل في مجسماتك.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>تنوع المواد</h4>
+                            <p>نوفر خيارات متعددة من المواد البلاستيكية والمرنة والصلبة.</p>
+                        </div>
+                    </li>
+                    <li>
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h4>سرعة الإنجاز</h4>
+                            <p>نعمل بكفاءة لضمان تسليم مشروعك في أسرع وقت ممكن.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="features-image reveal">
+                <div class="hologram-effect">
+                    <i class="fas fa-layer-group"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Counter -->
+    <section id="statistics" class="statistics">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-box reveal">
+                    <i class="fas fa-project-diagram"></i>
+                    <h3 class="counter" data-target="0">0</h3>
+                    <p>مشروع منجز</p>
+                </div>
+                <div class="stat-box reveal delay-1">
+                    <i class="fas fa-users"></i>
+                    <h3 class="counter" data-target="0">0</h3>
+                    <p>عميل سعيد</p>
+                </div>
+                <div class="stat-box reveal delay-2">
+                    <i class="fas fa-layer-group"></i>
+                    <h3 class="counter" data-target="0">0</h3>
+                    <p>نوع ومزيج للمواد</p>
+                </div>
+                <div class="stat-box reveal delay-2">
+                    <i class="fas fa-clock"></i>
+                    <h3 class="counter" data-target="0">0</h3>
+                    <p>ساعة تسليم قياسي</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to action / Contact -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-card glass-panel reveal">
+                <div class="contact-info">
+                    <h2>ابدأ مشروعك <span class="gradient-text">اليوم</span></h2>
+                    <p>هل لديك فكرة تود تجسيدها؟ أو نموذج جاهز للطباعة؟ تواصل معنا للحصول على عرض سعر فوري.</p>
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <span>Mohammeddaraan5@gmail.com</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone-alt"></i>
+                            <span dir="ltr">+967 737 214 666</span>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>الجمهورية اليمنية</span>
+                        </div>
+                    </div>
+
+                    <!-- Social Links in Contact -->
+                    <div class="contact-social-links mt-20" style="display: flex; gap: 15px; margin-top: 25px;">
+                        <a href="https://wa.me/967737214666" target="_blank" class="social-btn whatsapp-btn-color"><i class="fab fa-whatsapp"></i> واتساب</a>
+                        <a href="https://instagram.com/mnlab3d" target="_blank" class="social-btn instagram-btn-color"><i class="fab fa-instagram"></i> انستجرام</a>
+                        <a href="mailto:Mohammeddaraan5@gmail.com" class="social-btn email-btn-color"><i class="fas fa-envelope"></i> البريد</a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="quoteForm">
+                        <div class="input-group">
+                            <input type="text" placeholder="الاسم" required>
+                        </div>
+                        <div class="input-group">
+                            <input type="email" placeholder="البريد الإلكتروني" required>
+                        </div>
+                        <div class="input-group">
+                            <textarea placeholder="صف مشروعك أو الخدمة التي تريدها..." rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">إرسال الطلب <i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Tracking Section -->
+    <section id="tracking" class="glass-section" style="padding: 60px 0;">
+        <div class="container text-center">
+            <div class="section-title reveal">
+                <h2>تتبع <span class="gradient-text">حالة طلبك</span></h2>
+                <p>أدخل رقم الطلب الخاص بك لمعرفة أين وصلت قطعتك في خط الإنتاج.</p>
+            </div>
+            
+            <div class="tracking-box reveal" style="max-width: 500px; margin: 0 auto; background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid var(--glass-border);">
+                <div class="input-group mb-3">
+                    <input type="text" id="track-id-input" class="form-control" placeholder="مثال: MN-240408-001" style="background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; border-radius: 10px 0 0 10px;">
+                    <button class="btn btn-primary" onclick="trackOrder()" style="border-radius: 0 10px 10px 0;">تتبع الآن</button>
+                </div>
+                <div id="tracking-result" style="display: none; margin-top: 20px; text-align: right;">
+                    <!-- Status will be here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3D Preview Modal -->
+    <div id="preview3d-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content" style="max-width: 90%; width: 800px; height: 600px; position: relative;">
+            <button class="close-modal" onclick="closePreview3d()">&times;</button>
+            <div id="threejs-container" style="width: 100%; height: 100%; border-radius: 15px; overflow: hidden; background: #0a0a0f;"></div>
+            <div class="preview-info" style="position: absolute; bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); padding: 15px; border-radius: 10px; border: 1px solid var(--accent-1);">
+                <h4 class="gradient-text">تفاصيل المودل</h4>
+                <p id="preview-volume">الحجم: جارٍ الحساب...</p>
+                <p id="preview-price">السعر المتوقع: جارٍ الحساب...</p>
+                <button class="btn btn-primary btn-sm mt-2" onclick="showOrderForm()">اطلب الآن</button>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <a href="#home" class="logo">
+                    <span class="gradient-text">MNLAB</span> 3D
+                </a>
+                <p>إدارة الابتكار والتحول للواقع المجسم.</p>
+                <div class="social-links">
+                    <a href="https://x.com/mnlab3d" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="https://instagram.com/mnlab3d" target="_blank"><i class="fab fa-instagram"></i></a>
+                    <a href="https://linkedin.com/company/mnlab3d" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" onclick="openShareModal(event)" title="مشاركة الموقع عبر QR"><i class="fas fa-qrcode"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>روابط سريعة</h4>
+                <ul>
+                    <li><a href="#home">الرئيسية</a></li>
+                    <li><a href="#services">خدماتنا</a></li>
+                    <li><a href="#features">المميزات</a></li>
+                    <li><a href="#contact">تواصل معنا</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MNLAB 3D Printing. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/967737214666" target="_blank" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="modal-overlay">
+        <div class="modal-content glass-panel">
+            <button class="close-modal"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h2>طلب <span class="gradient-text">خدمة جديدة</span></h2>
+                <p>قم برفع ملف الـ 3D الخاص بك، وسنقوم بحساب التكلفة التقريبية والتواصل معك.</p>
+            </div>
+            
+            <form id="modalOrderForm">
+                <div class="input-group">
+                    <select id="serviceSelect" required>
+                        <option value="" disabled selected>اختر الخدمة المطلوبة</option>
+                        <option value="3d-printing">طباعة ثلاثية الأبعاد طباعة مجسم جاهز</option>
+                        <option value="3d-design">تصميم ونمذجة 3D فكرة جديدة</option>
+                        <option value="rapid-prototyping">طباعة نماذج أولية سريعة</option>
+                    </select>
+                </div>
+                
+                <div class="file-upload-wrapper">
+                    <div class="file-upload-box" id="fileUploadBox">
+                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                        <h3>اسحب وأفلت ملف الـ 3D هنا</h3>
+                        <p>الصيغ المدعومة: STL, OBJ, STEP, IGES (الحد الأقصى 50MB)</p>
+                        <span class="upload-btn-fallback">أو تصفح جهازك</span>
+                        <input type="file" id="modelFile" accept=".stl,.obj,.step,.iges" class="file-input" required>
+                    </div>
+                    <div id="fileInfo" class="file-info" style="display: none;">
+                        <i class="fas fa-file-archive"></i>
+                        <span id="fileName">model.stl</span>
+                        <button type="button" id="removeFile"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top: 20px;">
+                    <textarea placeholder="ملاحظات إضافية، نوع المادة المطلوبة، الجودة، وغيرها..." rows="3"></textarea>
+                </div>
+                
+                <!-- Fake Price calculation box -->
+                <div class="estimated-price" style="display: none;" id="estimatedPriceBox">
+                    <span>التكلفة التقريبية:</span>
+                    <h3 class="gradient-text" id="fakePriceContainer">يبدأ من 50 ريال</h3>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" style="margin-top: 20px;">طـلـب تـسعـيـرة نـهائـية <i class="fas fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="modal-overlay" onclick="if(event.target===this) closeShareModal()">
+        <div class="modal-content glass-panel" style="text-align: center; max-width: 400px; padding: 40px 30px;">
+            <button class="close-modal" onclick="closeShareModal()" style="top: 15px; right: 15px;"><i class="fas fa-times"></i></button>
+            <div class="modal-header" style="margin-bottom: 20px;">
+                <h2>مشاركة <span class="gradient-text">الموقع</span></h2>
+                <p>امسح الكود الذكي لزيارة MNLAB من أي هاتف</p>
+            </div>
+            
+            <div style="background: white; padding: 15px; border-radius: 12px; display: inline-block; margin: 10px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                <img id="share-qr-img" src="" alt="QR Code" style="width: 200px; height: 200px; max-width: 100%; display: block;">
+            </div>
+
+            <button onclick="nativeShare()" class="btn btn-primary w-100" style="margin-top: 25px; gap: 10px;">
+                <i class="fas fa-share-alt"></i> إرسال الرابط للآخرين
+            </button>
+        </div>
+    </div>
+
+    <!-- AI Chatbot UI -->
+    <div id="aiChatbot" class="chatbot-container">
+        <!-- Chat Toggle Button -->
+        <div class="chat-toggle" onclick="toggleChatbot()">
+            <i class="fas fa-robot"></i>
+            <span class="chat-badge">1</span>
+        </div>
+
+        <!-- Chat Window -->
+        <div class="chat-window" id="chatWindow">
+            <div class="chat-header">
+                <div>
+                    <i class="fas fa-robot"></i> مساعد MNLAB الذكي
+                </div>
+                <button onclick="toggleChatbot()" class="close-chat"><i class="fas fa-chevron-down"></i></button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <!-- Initial Answer -->
+                <div class="chat-message ai-message">
+                    <p>أهلاً بك في <strong>MNLAB</strong>! 👋<br>أنا المساعد الذكي، كيف يمكنني مساعدتك في مجال الطباعة ثلاثية الأبعاد اليوم؟</p>
+                </div>
+            </div>
+
+            <div class="chat-preview-area" id="chatPreviewArea" style="display: none;">
+                <img id="chatPreviewImage" src="" alt="preview">
+                <button class="close-preview" onclick="removeChatImage()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-input-area" id="chatInputArea">
+                <button class="icon-btn" onclick="document.getElementById('chatImageInput').click()" title="إرفاق صورة / كاميرا"><i class="fas fa-camera"></i></button>
+                <input type="file" id="chatImageInput" accept="image/*" capture="environment" style="display: none;" onchange="handleImageSelection(event)">
+                <button class="icon-btn mic-btn" id="micBtn" onclick="toggleVoiceRecord()" title="تحدث صوتياً"><i class="fas fa-microphone"></i></button>
+                
+                <input type="text" id="chatInput" placeholder="اكتب سؤالك هنا..." onkeypress="handleChatKeyPress(event)">
+                <button class="send-btn" onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Lightbox -->
+    <div id="lightbox" class="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightbox-img">
+    </div>
+
+    <!-- Virtual Keyboard -->
+    <div id="virtual-keyboard" class="virtual-keyboard hidden">
+        <div class="keyboard-header">
+            <span>لوحة مفاتيح MNLAB لشاشات اللمس</span>
+            <button id="close-keyboard"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="keyboard-keys" id="keyboard-keys">
+            <!-- Keys dynamically generated via JS -->
+        </div>
+    </div>
+
+    <!-- Secret Admin Trigger -->
+    <div class="secret-admin-trigger" onclick="openAdminLogin()" title="Admin Access">
+        <i class="fas fa-user-shield"></i>
+        <span>التحكم</span>
+    </div>
+
+    <!-- Scripts -->
+
+    <!-- Scripts -->
+    <script type="module" src="script.js?v=2027"></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+venv/
+ENV/
+
+# Secrets
+backend/.env
+.env
+
+# Local data (since we are now using cloud MongoDB)
+backend/settings.json
+backend/orders.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Executables
+cloudflared.exe
+cloudflared
