@@ -7,8 +7,8 @@ import json
 import os
 import shutil
 import datetime
-from models import AdvancedVisionSystem2026, SecureFaceVerification, HomeMixerX
-from database import StorageManager
+from backend.models import AdvancedVisionSystem2026, SecureFaceVerification, HomeMixerX
+from backend.database import StorageManager
 from dotenv import load_dotenv
 
 load_dotenv()

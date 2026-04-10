@@ -18,10 +18,11 @@ COPY . .
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
-ENV PORT=8000
+ENV PYTHONPATH=/app
+ENV PORT=10000
 
 # Expose the port
-EXPOSE 8000
+EXPOSE 10000
 
-# Start the application using Gunicorn
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "backend.main:app", "--bind", "0.0.0.0:8000"]
+# Start the application using Gunicorn (using sh -c to expand $PORT)
+CMD ["sh", "-c", "gunicorn -w 4 -k uvicorn.workers.UvicornWorker backend.main:app --bind 0.0.0.0:$PORT"]
