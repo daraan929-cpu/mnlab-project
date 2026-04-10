@@ -109,6 +109,15 @@ async def get_site_settings():
     settings = await storage.get_settings()
     # Safely remove sensitive info
     public_settings = {k: v for k, v in settings.items() if k != "admin"}
+    
+    # Fallback to Environment Variable for GOOGLE_API_KEY if not in DB
+    if not public_settings.get("content", {}).get("gemini_api_key"):
+        if "content" not in public_settings:
+            public_settings["content"] = {}
+        env_key = os.getenv("GOOGLE_API_KEY")
+        if env_key:
+            public_settings["content"]["gemini_api_key"] = env_key
+            
     return public_settings
 
 @app.post("/api/v1/settings")

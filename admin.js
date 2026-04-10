@@ -22,14 +22,18 @@ async function login() {
             headers: { 'X-Admin-Password': adminPassword }
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
             localStorage.setItem('mnlab_admin_pass', adminPassword);
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard').style.display = 'flex';
             loadSettings();
-        } else {
+        } else if (response.status === 401) {
+            errorMsg.textContent = 'الرمز غير صحيح';
             errorMsg.style.display = 'block';
             localStorage.removeItem('mnlab_admin_pass');
+        } else {
+            errorMsg.textContent = 'خطأ في قاعدة البيانات أو السيرفر (تحقق من MongoDB)';
+            errorMsg.style.display = 'block';
         }
     } catch (err) {
         console.error(err);
@@ -183,6 +187,7 @@ async function saveAll() {
         console.error(err);
     }
 }
+
 
 function showStatus() {
     const status = document.getElementById('save-status');

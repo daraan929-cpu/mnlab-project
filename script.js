@@ -166,13 +166,25 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModalBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
-            // Try closing both types of modals
-            if (window.closeModal) window.closeModal();
-            if (window.closePreview3d) window.closePreview3d();
-            // Also handle the chat if it's open
-            const chatContainer = document.getElementById('chat-container');
-            if (chatContainer && chatContainer.style.display !== 'none') {
-                chatContainer.style.display = 'none';
+            // Intelligent closing based on parent modal
+            const modal = btn.closest('.modal-overlay') || btn.closest('.lightbox') || btn.closest('.virtual-keyboard');
+            if (modal) {
+                if (modal.id === 'orderModal') closeModal();
+                else if (modal.id === 'preview3d-modal') closePreview3d();
+                else if (modal.id === 'shareModal') closeShareModal();
+                else if (modal.id === 'virtual-keyboard') Keyboard.close();
+                else if (modal.classList.contains('lightbox')) modal.classList.remove('active');
+            }
+            
+            // Handle chat preview
+            if (btn.classList.contains('close-preview')) {
+                removeChatImage();
+            }
+            
+            // Handle chat separately if needed
+            const chatWindow = document.getElementById('chatWindow');
+            if (chatWindow && chatWindow.classList.contains('open') && !btn.closest('.chat-preview-area')) {
+                toggleChatbot();
             }
         });
     });
@@ -576,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${activeKey}`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
