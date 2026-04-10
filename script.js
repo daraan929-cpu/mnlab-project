@@ -161,12 +161,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    if (closeModalBtn) {
-        closeModalBtn.addEventListener('click', (e) => {
+    const closeModalBtns = document.querySelectorAll('.close-modal');
+    
+    closeModalBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
             e.preventDefault();
-            window.closeModal();
+            // Try closing both types of modals
+            if (window.closeModal) window.closeModal();
+            if (window.closePreview3d) window.closePreview3d();
+            // Also handle the chat if it's open
+            const chatContainer = document.getElementById('chat-container');
+            if (chatContainer && chatContainer.style.display !== 'none') {
+                chatContainer.style.display = 'none';
+            }
         });
-    }
+    });
 
     // Close modal on outside click
     window.addEventListener('click', (e) => {
