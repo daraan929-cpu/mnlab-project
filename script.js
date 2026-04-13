@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function generateAIResponse(userText, imageData = null) {
         showTypingIndicator();
 
-        const systemPrompt = "أنت 'مساعد MNLAB الذكي'، خبير في تقنيات الطباعة ثلاثية الأبعاد (FDM) والذكاء الاصطناعي المتقدم. \n\nحول MNLAB:\n1. نحن الرائدون في اليمن في دمج الذكاء الاصطناعي مع التصنيع الرقمي.\n2. نستخدم خوارزمية X لتوصية النماذج وتخصيص تجربة المستخدم.\n3. نستخدم نموذج Grok-1 للذكاء الاصطناعي.\n4. نطور أنظمة رؤية حاسوبية متقدمة تعتمد على YOLOv9 و EfficientNet.\n\nإرشادات الرد:\n- تحدث باللغة العربية بأسلوب مهني ومستقبلي.\n- ركز على خدماتنا (PLA, ABS, PETG).\n- رقم التواصل: 967737214666.\n- شجع العملاء على طلب تسعيرة.";
+        const systemPrompt = "أنت 'مساعد MNLAB الذكي'، خبير في تقنيات الطباعة ثلاثية الأبعاد والتصنيع الرقمي، ومساعد ذكي شامل ومثقف يجيب على كافة ومختلف الأسئلة.\n\nحول MNLAB:\n1. الرائدون في اليمن في دمج الذكاء الاصطناعي مع التصنيع الرقمي.\n2. نطور خدمات ومنتجات رائدة.\n\nإرشادات الرد:\n- تحدث باللغة العربية بأسلوب ودود ومهني.\n- أجب بتفصيل وحرية عن أسئلة المستخدم في أي مجال (برمجة، طب، هندسة، فنون، إلخ) كأنك ChatGPT أو مساعد ذكي متكامل.\n- إذا كان سؤال المستخدم يتعلق بمنتجات مادية أو مجسمات، يمكنك بذكاء تذكيره بخدماتنا في الطباعة ثلاثية الأبعاد.\n- رقم التواصل الخاص بنا: 967737214666.";
 
         let newParts = [];
         if (userText) newParts.push({ text: userText });
@@ -594,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({
                     contents: safeHistory,
                     systemInstruction: { parts: [{ text: systemPrompt }] },
-                    generationConfig: { temperature: 0.7, maxOutputTokens: 512 }
+                    generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
                 })
             });
 
