@@ -623,11 +623,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 conversationHistory.pop();
             }
             
-            let userFriendlyMsg = "حدث خطأ في الاتصال بالذكاء الاصطناعي.";
-            if (error.message === "API_KEY_MISSING") userFriendlyMsg = "عذراً، مفتاح API الخاص بـ Gemini غير متوفر أو غير صالح في الإعدادات.";
-            else if (error.message.includes("API key not valid")) userFriendlyMsg = "مفتاح الـ API غير صالح. يرجى التحقق من لوحة التحكم.";
+            let userFriendlyMsg = "حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة بعد قليل.";
+            if (error.message === "API_KEY_MISSING") {
+                userFriendlyMsg = "عذراً، مفتاح API الخاص بـ Gemini غير متوفر أو غير صالح.";
+            } else if (error.message.includes("API key not valid")) {
+                userFriendlyMsg = "مفتاح الـ API غير صالح. يرجى التحقق من لوحة التحكم.";
+            } else if (error.message.includes("exceeded") || error.message.includes("quota") || error.message.includes("429")) {
+                userFriendlyMsg = "يبدو أن هناك ضغطاً حالياً على الخادم (كثرة الطلبات)، يرجى الانتظار دقيقة والمحاولة ثانية.";
+            } else if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
+                userFriendlyMsg = "مشكلة في الاتصال بالإنترنت، يرجى التأكد من شبكتك والمحاولة مجدداً.";
+            }
             
-            addAIMessage(userFriendlyMsg + " (Error: " + error.message + ")");
+            addAIMessage(userFriendlyMsg + " <br><small>(الخطأ التقني: " + error.message + ")</small>");
         }
     }
 
