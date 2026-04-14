@@ -1607,57 +1607,7 @@ select option {
 }
 .close-lightbox:hover { color: var(--accent-1); }
 
-/* Virtual Keyboard */
-.virtual-keyboard {
-    position: fixed;
-    bottom: 0; left: 0; width: 100%;
-    background: var(--bg-secondary);
-    padding: 15px;
-    border-top: 1px solid var(--glass-border);
-    box-shadow: 0 -5px 30px rgba(0,0,0,0.5);
-    z-index: 4000;
-    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    display: flex; flex-direction: column; align-items: center;
-}
-.virtual-keyboard.hidden {
-    transform: translateY(100%);
-}
-.keyboard-header {
-    width: 100%; max-width: 800px;
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 10px; color: var(--accent-1);
-    font-weight: bold; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px;
-}
-.keyboard-header button {
-    background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer; transition: color 0.3s;
-}
-.keyboard-header button:hover { color: #ff4757; }
-.keyboard-keys {
-    max-width: 800px; width: 100%; direction: ltr; margin: 0 auto;
-}
-.keyboard__key {
-    height: 45px; flex: 1; max-width: 60px; margin: 0 4px;
-    border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);
-    color: white; font-size: 1.2rem; cursor: pointer; font-family: 'Cairo', sans-serif;
-    transition: all 0.2s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-    display: flex; align-items: center; justify-content: center;
-}
-.keyboard__key:active, .keyboard__key:hover {
-    background: var(--accent-1); color: black; transform: translateY(2px); box-shadow: none;
-}
-.keyboard__key--wide { max-width: 90px; }
-.keyboard__key--extra-wide { max-width: 400px; }
-@media (max-width: 768px) {
-    .keyboard__key { height: 40px; font-size: 1rem; margin: 0 2px; }
-}
 
-body.keyboard-is-open .chatbot-container {
-    transform: translateY(-280px);
-}
-body.keyboard-is-open .modal-content {
-    transform: translateY(-100px) scale(1);
-}
 
 /* --- Admin Panel Integration Styles --- */
 .admin-modal {
