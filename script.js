@@ -765,6 +765,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
+            // 4. Materials
+            if (settings.materials && Array.isArray(settings.materials)) {
+                const materialsGrid = document.getElementById('materials-grid');
+                if (materialsGrid) {
+                    materialsGrid.innerHTML = settings.materials.map((mat, index) => `
+                        <div class="service-card reveal ${index > 0 ? 'delay-' + (index % 3) : ''}">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-layer-group"></i>
+                            </div>
+                            <h3>${escapeHTML(mat.name)}</h3>
+                            <p>${escapeHTML(mat.description)}</p>
+                        </div>
+                    `).join('');
+                }
+            }
+
             // Apply Images
             if (settings.images && settings.images.hero_image) {
                 const heroImg = document.querySelector('.hero-image img');
@@ -1042,5 +1058,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     initDynamicQR();
+
+    function escapeHTML(str) {
+        if (!str) return '';
+        return str.replace(/[&<>"']/g, function(m) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[m];
+        });
+    }
 
 });
