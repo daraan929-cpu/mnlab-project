@@ -778,6 +778,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p>${escapeHTML(mat.description)}</p>
                         </div>
                     `).join('');
+                    
+                    // Observe new elements for scroll animation
+                    const newReveals = materialsGrid.querySelectorAll('.reveal');
+                    if (typeof revealOnScroll !== 'undefined' && revealOnScroll.observe) {
+                        newReveals.forEach(el => revealOnScroll.observe(el));
+                    } else {
+                        // Fallback: just show them if observer is missing
+                        newReveals.forEach(el => el.classList.add('active'));
+                    }
                 }
             }
 

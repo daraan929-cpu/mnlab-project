@@ -137,8 +137,10 @@ async def get_site_settings():
         if key in settings and isinstance(settings[key], dict):
             final_settings[key].update(settings[key])
     
-    if "materials" in settings and isinstance(settings["materials"], list):
+    if "materials" in settings and isinstance(settings["materials"], list) and len(settings["materials"]) > 0:
         final_settings["materials"] = settings["materials"]
+    else:
+        final_settings["materials"] = DEFAULT_SETTINGS["materials"]
 
     # Safely remove sensitive info
     public_settings = {k: v for k, v in final_settings.items() if k != "admin"}
