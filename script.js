@@ -167,12 +167,11 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             // Intelligent closing based on parent modal
-            const modal = btn.closest('.modal-overlay') || btn.closest('.lightbox') || btn.closest('.virtual-keyboard');
+            const modal = btn.closest('.modal-overlay') || btn.closest('.lightbox');
             if (modal) {
                 if (modal.id === 'orderModal') closeModal();
                 else if (modal.id === 'preview3d-modal') closePreview3d();
                 else if (modal.id === 'shareModal') closeShareModal();
-                else if (modal.id === 'virtual-keyboard') Keyboard.close();
                 else if (modal.classList.contains('lightbox')) modal.classList.remove('active');
             }
             
@@ -722,128 +721,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 13. Virtual Arabic Keyboard
-    const Keyboard = {
-        elements: {
-            main: document.getElementById("virtual-keyboard"),
-            keysContainer: document.getElementById("keyboard-keys"),
-        },
-        properties: {
-            value: "",
-            currentInput: null
-        },
-        init() {
-            if (!this.elements.main) return;
-            // Setup keys - Arabic layout
-            const keyLayout = [
-                ["ض", "ص", "ث", "ق", "ف", "غ", "ع", "ه", "خ", "ح", "ج", "د", "back"],
-                ["ش", "س", "ي", "ب", "ل", "ا", "ت", "ن", "م", "ك", "ط", "enter"],
-                ["ئ", "ء", "ؤ", "ر", "لا", "ى", "ة", "و", "ز", "ظ", "ذ"],
-                ["space"]
-            ];
-
-            const fragment = document.createDocumentFragment();
-
-            keyLayout.forEach(row => {
-                const rowDiv = document.createElement("div");
-                rowDiv.classList.add("keyboard-row");
-                rowDiv.style.display = "flex";
-                rowDiv.style.justifyContent = "center";
-                rowDiv.style.marginBottom = "8px";
-
-                row.forEach(key => {
-                    const keyElement = document.createElement("button");
-                    keyElement.setAttribute("type", "button");
-                    keyElement.classList.add("keyboard__key");
-
-                    // Prevent focus from being stolen from the input field
-                    keyElement.addEventListener("mousedown", e => e.preventDefault());
-
-                    switch (key) {
-                        case "back":
-                            keyElement.classList.add("keyboard__key--wide");
-                            keyElement.innerHTML = `<i class="fas fa-backspace"></i>`;
-                            keyElement.addEventListener("click", () => this.handleKeypress("back"));
-                            break;
-                        case "enter":
-                            keyElement.classList.add("keyboard__key--wide");
-                            keyElement.innerHTML = `<i class="fas fa-level-down-alt" style="transform: rotate(90deg)"></i>`;
-                            keyElement.addEventListener("click", () => {
-                                this.close();
-                                // If chat input, try to send message
-                                if (this.properties.currentInput && this.properties.currentInput.id === 'chatInput') {
-                                    sendChatMessage();
-                                }
-                            });
-                            break;
-                        case "space":
-                            keyElement.classList.add("keyboard__key--extra-wide");
-                            keyElement.innerHTML = `مسافة`;
-                            keyElement.addEventListener("click", () => this.handleKeypress(" "));
-                            break;
-                        default:
-                            keyElement.textContent = key;
-                            keyElement.addEventListener("click", () => this.handleKeypress(key));
-                            break;
-                    }
-                    rowDiv.appendChild(keyElement);
-                });
-                fragment.appendChild(rowDiv);
-            });
-
-            this.elements.keysContainer.innerHTML = '';
-            this.elements.keysContainer.appendChild(fragment);
-
-            // Bind to all text inputs
-            const setupInputs = () => {
-                document.querySelectorAll("input[type='text'], input[type='email'], textarea").forEach(element => {
-                    element.addEventListener("focus", () => {
-                        this.open(element);
-                    });
-                });
-            };
-            
-            // Setup inputs initially
-            setupInputs();
-
-            // Set up close button
-            document.getElementById("close-keyboard").addEventListener("click", () => this.close());
-        },
-        handleKeypress(char) {
-            if (!this.properties.currentInput) return;
-            
-            let el = this.properties.currentInput;
-            let start = el.selectionStart;
-            let end = el.selectionEnd;
-
-            if (char === "back") {
-                if (start === end && start > 0) {
-                    el.value = el.value.substring(0, start - 1) + el.value.substring(end);
-                    el.selectionStart = el.selectionEnd = start - 1;
-                } else if (start !== end) {
-                    el.value = el.value.substring(0, start) + el.value.substring(end);
-                    el.selectionStart = el.selectionEnd = start;
-                }
-            } else {
-                el.value = el.value.substring(0, start) + char + el.value.substring(end);
-                el.selectionStart = el.selectionEnd = start + char.length;
-            }
-            
-            // Trigger input event so site plugins know it changed
-            el.dispatchEvent(new Event('input', { bubbles: true }));
-            el.focus(); // keep focus
-        },
-        open(inputElement) {
-            this.properties.currentInput = inputElement;
-            this.elements.main.classList.remove("hidden");
-            document.body.classList.add("keyboard-is-open");
-        },
-        close() {
-            this.properties.currentInput = null;
-            this.elements.main.classList.add("hidden");
-            document.body.classList.remove("keyboard-is-open");
-        }
-    };
+    // Keyboard code removed
 
     // 14. Dynamic Settings from Backend
     const API_BASE = '';
@@ -1130,7 +1008,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Start Platform Logic (After all definitions) ---
     initDynamicSettings();
-    Keyboard.init();
 
     // --- Dynamic QR Code Generation ---
     // Generates real QR codes pointing to the public URL OR local IP
