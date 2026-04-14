@@ -63,6 +63,9 @@ async function loadSettings() {
         colorsContainer.innerHTML = '';
         
         for (const [key, value] of Object.entries(settings.colors)) {
+            // Apply to Admin Panel too for preview
+            document.documentElement.style.setProperty(key, value);
+            
             if (value.startsWith('#')) {
                 const item = document.createElement('div');
                 item.className = 'color-picker-item';
@@ -116,7 +119,8 @@ function showTab(tabId, el) {
 }
 
 function updateColorPreview(input) {
-    // Optional: Real-time preview if we had an iframe of the site here
+    // Real-time preview for the admin dashboard itself
+    document.documentElement.style.setProperty(input.dataset.var, input.value);
 }
 
 async function handleUpload(target, input) {
@@ -261,6 +265,13 @@ async function loadOrders() {
                 <div style="font-size: 0.9rem;">
                     <p>العميل: ${order.customer_name || 'N/A'}</p>
                     <p>التفاصيل: ${order.details || 'N/A'}</p>
+                    ${order.design_file ? `
+                    <p style="margin-top: 5px;">
+                        <strong>الملف المرفق:</strong> 
+                        <a href="${API_BASE}/api/v1/order-file/${order.id}" target="_blank" style="color: var(--accent-1); text-decoration: underline;">
+                           <i class="fas fa-download"></i> تحميل ملف التصميم
+                        </a>
+                    </p>` : '<p style="color: #666;">لا يوجد ملف مرفق</p>'}
                 </div>
                 <div style="display: flex; gap: 10px; width: 100%; margin-top: 5px;">
                     <select onchange="updateOrderStatus('${order.id}', this.value)" style="background: #1a1a2e; color: white; border: 1px solid var(--glass-border); padding: 5px; border-radius: 5px; flex: 1;">

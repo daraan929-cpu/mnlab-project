@@ -130,3 +130,22 @@ class StorageManager:
             # We don't save the base64 here to keep local storage clean, 
             # the main.py handles local file saving.
             return filename
+
+    async def save_order_file(self, order_id: str, content: bytes, filename: str):
+        """Saves a 3D model or design file for an order"""
+        if self.use_mongodb:
+            import base64
+            base64_data = base64.b64encode(content).decode('utf-8')
+            # For large STL files, we might want GridFS, but for now Base64 in media collection is consistent with save_image
+            await self.db.order_files.update_one(
+                {"order_id": order_id},
+                {"$set": {"filename": filename, "data_uri": f"data:application/octet-stream;base64,{base64_data}"}},
+                upsert=True
+            )
+            return f"{order_id}_{filename}"
+        else:
+            safe_filename = f"order_{order_id}_{filename}"
+            file_path = os.path.join(os.path.dirname(self.orders_file), safe_filename)
+            with open(file_path, "wb") as f:
+                f.write(content)
+            return safe_filename

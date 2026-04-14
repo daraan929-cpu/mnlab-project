@@ -284,15 +284,21 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = true;
 
             try {
-                // Submit to backend
+                // Submit to backend using FormData for file support
+                const formData = new FormData();
+                const fileInput = document.getElementById('modelFile');
+                
+                if (fileInput && fileInput.files[0]) {
+                    formData.append('file', fileInput.files[0]);
+                }
+                
+                formData.append('customer_name', "عميل من الموقع");
+                formData.append('service_type', service);
+                formData.append('details', `خدمة: ${service}`);
+
                 const resp = await fetch(`${API_BASE}/api/v1/orders`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        customer_name: "عميل جديد", // Could be added to form
-                        details: `خدمة: ${service}`,
-                        service_type: service
-                    })
+                    body: formData // No Content-Type header needed for FormData
                 });
                 
                 const data = await resp.json();
@@ -800,14 +806,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'fas fa-cube';
     }
 
-    // 15. Admin Redirect
-    window.openAdminLogin = function() {
-        window.location.href = 'admin.html';
-    };
+    // Admin management removed from public script for security
 
-    window.closeAdminModal = function() {
-        // Redundant as we use a separate page, but kept for compatibility
-    };
 
     // 16. AI Lab Features (Vision System & X-Algorithm)
     window.runAiVision = async function(input) {

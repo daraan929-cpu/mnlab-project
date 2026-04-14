@@ -187,10 +187,62 @@ async def upload_site_image(
 
 # --- Order Management System ---
 @app.post("/api/v1/orders")
-async def create_new_order(order: dict):
-    """Saves a new 3D printing order"""
-    order_id = await storage.add_order(order)
-    return {"status": "success", "order_id": order_id}
+async def create_new_order(
+    customer_name: str = Form("عميل من الموقع"),
+    service_type: str = Form(""),
+    details: str = Form(""),
+    file: UploadFile = File(None)
+):
+    """Saves a new 3D printing order with optional file upload"""
+    order_id = str(datetime.datetime.now().timestamp()).replace('.', '')
+    file_path = None
+    
+    if file:
+        content = await file.read()
+        file_path = await storage.save_order_file(order_id, content, file.filename)
+        
+    order = {
+        "id": order_id,
+        "customer_name": customer_name,
+        "service_type": service_type,
+        "details": details,
+        "design_file": file_path,
+        "status": "pending"
+    }
+    
+    saved_id = await storage.add_order(order)
+    return {"status": "success", "order_id": saved_id}
+
+@app.get("/api/v1/order-file/{order_id}")
+async def download_order_file(order_id: str):
+    """Serves the uploaded design file for an order"""
+    if storage.use_mongodb:
+        file_data = await storage.db.order_files.find_one({"order_id": order_id})
+        if not file_data:
+             raise HTTPException(status_code=404, detail="الملف غير موجود")
+        
+        import base64
+        # Extract base64 from data URI
+        data_uri = file_data["data_uri"]
+        header, encoded = data_uri.split(",", 1)
+        content = base64.b64decode(encoded)
+        
+        from fastapi.responses import Response
+        return Response(content=content, media_type="application/octet-stream", headers={
+            "Content-Disposition": f"attachment; filename={file_data['filename']}"
+        })
+    else:
+        order = await storage.get_order_by_id(order_id)
+        if not order or not order.get("design_file"):
+            raise HTTPException(status_code=404, detail="الملف غير موجود")
+        
+        file_path = os.path.join(os.path.dirname(storage.orders_file), order["design_file"])
+        if os.path.exists(file_path):
+            from fastapi.responses import FileResponse
+            return FileResponse(path=file_path, filename=order["design_file"].replace(f"order_{order_id}_", ""))
+        
+    raise HTTPException(status_code=404, detail="الملف غير موجود")
+
 
 @app.get("/api/v1/orders/{order_id}")
 async def fetch_order_status(order_id: str):
