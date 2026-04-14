@@ -52,6 +52,7 @@ async function loadSettings() {
         const settings = await response.json();
 
         // 1. General & Content
+        // 1. General & Content
         document.getElementById('setting-phone').value = settings.content?.contact_phone || '';
         document.getElementById('setting-email').value = settings.content?.contact_email || '';
         document.getElementById('setting-hero-title').value = settings.content?.hero_title || '';
@@ -62,11 +63,12 @@ async function loadSettings() {
         const colorsContainer = document.getElementById('colors-container');
         colorsContainer.innerHTML = '';
         
-        for (const [key, value] of Object.entries(settings.colors)) {
+        const colors = settings.colors || {};
+        for (const [key, value] of Object.entries(colors)) {
             // Apply to Admin Panel too for preview
             document.documentElement.style.setProperty(key, value);
             
-            if (value.startsWith('#')) {
+            if (value && typeof value === 'string' && value.startsWith('#')) {
                 const item = document.createElement('div');
                 item.className = 'color-picker-item';
                 item.innerHTML = `
@@ -78,18 +80,19 @@ async function loadSettings() {
         }
 
         // 3. Images Previews
-        if (settings.images.hero_image) {
+        const images = settings.images || {};
+        if (images.hero_image) {
             const heroPrev = document.getElementById('preview-hero');
-            heroPrev.src = `/${settings.images.hero_image}`;
+            heroPrev.src = images.hero_image.startsWith('data:') ? images.hero_image : `/${images.hero_image}`;
             heroPrev.style.display = 'block';
         }
         
         // Gallery Previews
-        if (settings.images.gallery && Array.isArray(settings.images.gallery)) {
-            settings.images.gallery.forEach((img, index) => {
+        if (images.gallery && Array.isArray(images.gallery)) {
+            images.gallery.forEach((img, index) => {
                 const prev = document.getElementById(`preview-gallery${index + 1}`);
                 if (prev) {
-                    prev.src = `/${img}`;
+                    prev.src = img.startsWith('data:') ? img : `/${img}`;
                     prev.style.display = 'block';
                 }
             });
@@ -251,7 +254,7 @@ async function loadOrders() {
         });
         const orders = await response.json();
         
-        if (orders.length === 0) {
+        if (!Array.isArray(orders) || orders.length === 0) {
             list.innerHTML = '<p style="color: grey;">لا توجد طلبات حالياً.</p>';
             return;
         }

@@ -103,17 +103,48 @@ async def get_local_ip():
 
 # --- Admin Endpoints ---
 
+DEFAULT_SETTINGS = {
+    "colors": {
+        "--bg-main": "#0a0a0f",
+        "--accent-1": "#00f2fe",
+        "--accent-2": "#4facfe",
+        "--accent-3": "#8a2be2"
+    },
+    "content": {
+        "contact_phone": "967737214666",
+        "contact_email": "info@mnlab.com",
+        "hero_title": "مستقبل التصنيع الرقمي في اليمن",
+        "hero_subtitle": "نحول أفكارك إلى واقع ملموس بتقنيات الطباعة ثلاثية الأبعاد الأكثر تطوراً."
+    },
+    "images": {
+        "hero_image": "hero.png",
+        "gallery": ["gallery4.jpg", "gallery5.jpg", "gallery6.jpg", "gallery7.jpg", "gallery8.jpg", "gallery9.jpg"]
+    },
+    "materials": [
+        {"name": "PLA", "description": "سهل الاستخدام ومثالي للنماذج الجمالية."},
+        {"name": "PETG", "description": "قوي ومقاوم للحرارة، مناسب للأجزاء الميكانيكية."}
+    ]
+}
+
 @app.get("/api/v1/settings")
 async def get_site_settings():
-    """Returns the current site settings (public)"""
+    """Returns the current site settings (public) with fallbacks"""
     settings = await storage.get_settings()
-    # Safely remove sensitive info
-    public_settings = {k: v for k, v in settings.items() if k != "admin"}
     
-    # Fallback to Environment Variable for GOOGLE_API_KEY if not in DB
+    # Deep merge with defaults
+    final_settings = DEFAULT_SETTINGS.copy()
+    for key in ["colors", "content", "images"]:
+        if key in settings and isinstance(settings[key], dict):
+            final_settings[key].update(settings[key])
+    
+    if "materials" in settings and isinstance(settings["materials"], list):
+        final_settings["materials"] = settings["materials"]
+
+    # Safely remove sensitive info
+    public_settings = {k: v for k, v in final_settings.items() if k != "admin"}
+    
+    # Fallback to Environment Variable for GOOGLE_API_KEY
     if not public_settings.get("content", {}).get("gemini_api_key"):
-        if "content" not in public_settings:
-            public_settings["content"] = {}
         env_key = os.getenv("GOOGLE_API_KEY")
         if env_key:
             public_settings["content"]["gemini_api_key"] = env_key
