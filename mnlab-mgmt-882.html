@@ -280,6 +280,9 @@
             <div class="nav-item" onclick="showTab('materials', this)">
                 <i class="fas fa-cubes"></i> إدارة المواد
             </div>
+            <div class="nav-item" onclick="showTab('statistics', this)">
+                <i class="fas fa-chart-line"></i> الإحصائيات
+            </div>
             <div class="nav-item" onclick="showTab('orders', this)">
                 <i class="fas fa-shopping-cart"></i> إدارة الطلبات
             </div>
@@ -367,6 +370,27 @@
                 </div>
                 <div id="materials-container" class="grid-settings">
                     <!-- Materials load here -->
+                </div>
+            </div>
+
+            <div id="statistics" class="tab-content">
+                <div class="grid-settings">
+                    <div class="input-group">
+                        <label>عدد المشاريع المنجزة</label>
+                        <input type="number" id="setting-stat-projects">
+                    </div>
+                    <div class="input-group">
+                        <label>عدد العملاء</label>
+                        <input type="number" id="setting-stat-clients">
+                    </div>
+                    <div class="input-group">
+                        <label>أنواع المواد</label>
+                        <input type="number" id="setting-stat-materials">
+                    </div>
+                    <div class="input-group">
+                        <label>ساعة تسليم (متوسط)</label>
+                        <input type="number" id="setting-stat-speed">
+                    </div>
                 </div>
             </div>
 

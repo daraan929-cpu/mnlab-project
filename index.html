@@ -33,6 +33,11 @@
                     <li><a href="#contact">تواصل معنا</a></li>
                 </ul>
             </nav>
+            <div class="nav-extra">
+                <button id="theme-toggle" class="theme-btn" title="تبديل الوضع الليلي/النهاري">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
             <div class="hamburger">
                 <i class="fas fa-bars"></i>
             </div>
@@ -59,8 +64,11 @@
                     </div>
                 </div>
             </div>
-            <div class="hero-image animate-float">
-                <img src="hero-fdm.png" alt="High-End Industrial 3D Printer Printing Complex Part" style="width: 100%; max-width: 600px; border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 242, 254, 0.5); object-fit: cover;">
+            <div class="hero-image animate-float" id="hero-3d-container">
+                <!-- Three.js Canvas will be here -->
+                <div id="hero-3d-placeholder" style="width: 100%; height: 500px; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(0,242,254,0.1) 0%, transparent 70%); border-radius: 30px; border: 1px dashed rgba(255,255,255,0.1);">
+                    <img src="hero-fdm.png" alt="3D Printing Preview" style="width: 80%; border-radius: 20px; transition: opacity 0.5s;">
+                </div>
             </div>
         </div>
         <div class="bg-glow"></div>
@@ -109,7 +117,12 @@
     </section>
 
     <!-- Materials Section -->
-    <section id="materials" class="materials">
+    <section id="materials" class="materials" style="position: relative;">
+        <div class="cinema-bg">
+            <video autoplay muted loop playsinline poster="hero-fdm.png">
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-3d-printer-nozzle-printing-a-small-object-31720-large.mp4" type="video/mp4">
+            </video>
+        </div>
         <div class="container">
             <div class="section-title reveal">
                 <h2>أنواع <span class="gradient-text">مواد الطباعة</span></h2>
@@ -202,7 +215,7 @@
                 <h2>معرض <span class="gradient-text">الأعمال</span></h2>
                 <p>نماذج من مشاريعنا ومطبوعاتنا بجودة فائقة.</p>
             </div>
-            <div class="gallery-grid">
+            <div class="gallery-grid" id="dynamic-gallery-grid">
                 <div class="gallery-item">
                     <img src="gallery1.png" alt="High Tech 3D Printed Part" class="gallery-img">
                     <div class="gallery-placeholder">
@@ -390,7 +403,12 @@
     </section>
 
     <!-- Why Choose Us / Features -->
-    <section id="features" class="features glass-section">
+    <section id="features" class="features glass-section" style="position: relative;">
+        <div class="cinema-bg">
+            <video autoplay muted loop playsinline>
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-inside-a-3d-printer-printing-a-structure-31721-large.mp4" type="video/mp4">
+            </video>
+        </div>
         <div class="container features-content">
             <div class="features-text reveal">
                 <h2>لماذا تختار <span class="gradient-text">MNLAB</span>؟</h2>
@@ -432,22 +450,22 @@
             <div class="stats-grid">
                 <div class="stat-box reveal">
                     <i class="fas fa-project-diagram"></i>
-                    <h3 class="counter" data-target="0">0</h3>
+                    <h3 class="counter" id="stat-projects" data-target="0">0</h3>
                     <p>مشروع منجز</p>
                 </div>
                 <div class="stat-box reveal delay-1">
                     <i class="fas fa-users"></i>
-                    <h3 class="counter" data-target="0">0</h3>
+                    <h3 class="counter" id="stat-clients" data-target="0">0</h3>
                     <p>عميل سعيد</p>
                 </div>
                 <div class="stat-box reveal delay-2">
                     <i class="fas fa-layer-group"></i>
-                    <h3 class="counter" data-target="0">0</h3>
+                    <h3 class="counter" id="stat-materials" data-target="0">0</h3>
                     <p>نوع ومزيج للمواد</p>
                 </div>
                 <div class="stat-box reveal delay-2">
                     <i class="fas fa-clock"></i>
-                    <h3 class="counter" data-target="0">0</h3>
+                    <h3 class="counter" id="stat-speed" data-target="0">0</h3>
                     <p>ساعة تسليم قياسي</p>
                 </div>
             </div>

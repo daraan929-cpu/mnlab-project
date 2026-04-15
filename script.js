@@ -4,7 +4,13 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let dynamicGeminiKey = '';
 
+import * as THREE from 'three';
+
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // --- MNLAB Extreme Upgrade: 0. Helper Functions & Global State ---
+    let currentTheme = localStorage.getItem('mnlab_theme') || 'dark';
+    if (currentTheme === 'light') document.body.classList.add('light-theme');
     // 1. Mobile Navigation Toggle
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
@@ -699,26 +705,32 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 12. Gallery Lightbox
-    const galleryItems = document.querySelectorAll('.gallery-item');
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const closeLightbox = document.querySelector('.close-lightbox');
 
-    if (galleryItems.length > 0 && lightbox) {
-        galleryItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const img = item.querySelector('img').src;
-                lightboxImg.src = img;
-                lightbox.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Stop scrolling
+    window.bindLightbox = function() {
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        if (galleryItems.length > 0 && lightbox) {
+            galleryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const img = item.querySelector('img').src;
+                    lightboxImg.src = img;
+                    lightbox.classList.add('active');
+                    document.body.style.overflow = 'hidden'; 
+                });
             });
-        });
+        }
+    };
 
+    if (closeLightbox) {
         closeLightbox.addEventListener('click', () => {
             lightbox.classList.remove('active');
             document.body.style.overflow = 'auto';
         });
+    }
 
+    if (lightbox) {
         lightbox.addEventListener('click', (e) => {
             if (e.target !== lightboxImg) {
                 lightbox.classList.remove('active');
@@ -726,6 +738,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    bindLightbox();
 
     // Keyboard code removed
 
@@ -765,26 +779,29 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // 4. Materials
-            if (settings.materials && Array.isArray(settings.materials)) {
+            // Apply Materials to Main UI
+            if (settings.materials && Array.isArray(settings.materials) && settings.materials.length > 0) {
                 const materialsGrid = document.getElementById('materials-grid');
                 if (materialsGrid) {
-                    materialsGrid.innerHTML = settings.materials.map((mat, index) => `
-                        <div class="service-card reveal ${index > 0 ? 'delay-' + (index % 3) : ''}">
+                    materialsGrid.innerHTML = '';
+                    settings.materials.forEach((mat, index) => {
+                        const card = document.createElement('div');
+                        card.className = `service-card reveal ${index > 0 ? 'delay-' + (index % 3) : ''}`;
+                        card.innerHTML = `
                             <div class="icon-wrapper">
-                                <i class="fas fa-layer-group"></i>
+                                <i class="${getMaterialIcon(mat.name)}"></i>
                             </div>
                             <h3>${escapeHTML(mat.name)}</h3>
                             <p>${escapeHTML(mat.description)}</p>
-                        </div>
-                    `).join('');
+                        `;
+                        materialsGrid.appendChild(card);
+                    });
                     
                     // Observe new elements for scroll animation
                     const newReveals = materialsGrid.querySelectorAll('.reveal');
                     if (typeof revealOnScroll !== 'undefined' && revealOnScroll.observe) {
                         newReveals.forEach(el => revealOnScroll.observe(el));
                     } else {
-                        // Fallback: just show them if observer is missing
                         newReveals.forEach(el => el.classList.add('active'));
                     }
                 }
@@ -796,23 +813,49 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (heroImg) heroImg.src = settings.images.hero_image;
             }
 
-            // Apply Materials to Main UI
-            if (settings.materials) {
-                const materialsGrid = document.querySelector('#materials .services-grid');
-                if (materialsGrid) {
-                    materialsGrid.innerHTML = '';
-                    settings.materials.forEach((mat, index) => {
-                        const card = document.createElement('div');
-                        card.className = `service-card reveal ${index > 0 ? 'delay-' + index : ''} active`;
-                        card.innerHTML = `
-                            <div class="icon-wrapper">
-                                <i class="${getMaterialIcon(mat.name)}"></i>
+            // Apply Gallery
+            if (settings.images && settings.images.gallery && Array.isArray(settings.images.gallery) && settings.images.gallery.length > 0) {
+                const galleryGrid = document.getElementById('dynamic-gallery-grid');
+                if (galleryGrid) {
+                    galleryGrid.innerHTML = settings.images.gallery.map(img => {
+                         const src = img.startsWith('data:') ? img : (img.startsWith('gallery') ? `/${img}` : img);
+                         return `
+                            <div class="gallery-item reveal">
+                                <img src="${src}" alt="3D Printed Part" class="gallery-img">
+                                <div class="gallery-placeholder">
+                                    <i class="fas fa-cube"></i>
+                                    <span>عمل من المختبر</span>
+                                </div>
                             </div>
-                            <h3>${mat.name}</h3>
-                            <p>${mat.description}</p>
-                        `;
-                        materialsGrid.appendChild(card);
-                    });
+                         `;
+                    }).join('');
+                    
+                    // Re-bind Lightbox & Reveal
+                    if (window.bindLightbox) window.bindLightbox();
+                    const newReveals = galleryGrid.querySelectorAll('.reveal');
+                    if (typeof revealOnScroll !== 'undefined' && revealOnScroll.observe) {
+                        newReveals.forEach(el => revealOnScroll.observe(el));
+                    } else {
+                        newReveals.forEach(el => el.classList.add('active'));
+                    }
+                }
+            }
+
+            // Apply Statistics
+            if (settings.statistics) {
+                const statsMap = {
+                    'stat-projects': settings.statistics.projects,
+                    'stat-clients': settings.statistics.clients,
+                    'stat-materials': settings.statistics.materials,
+                    'stat-speed': settings.statistics.speed
+                };
+                for (const [id, value] of Object.entries(statsMap)) {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.setAttribute('data-target', value);
+                        // If animation already finished, update text too
+                        if (countersStarted) el.innerText = value + (value > 50 ? '+' : '');
+                    }
                 }
             }
 

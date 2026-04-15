@@ -102,6 +102,14 @@ async function loadSettings() {
         currentMaterials = settings.materials || [];
         renderMaterials();
 
+        // 5. Statistics
+        if (settings.statistics) {
+            document.getElementById('setting-stat-projects').value = settings.statistics.projects || 0;
+            document.getElementById('setting-stat-clients').value = settings.statistics.clients || 0;
+            document.getElementById('setting-stat-materials').value = settings.statistics.materials || 0;
+            document.getElementById('setting-stat-speed').value = settings.statistics.speed || 0;
+        }
+
     } catch (err) {
         console.error('Error loading settings:', err);
     }
@@ -166,6 +174,12 @@ async function saveAll() {
             hero_title: document.getElementById('setting-hero-title').value,
             hero_subtitle: document.getElementById('setting-hero-subtitle').value,
             gemini_api_key: document.getElementById('setting-gemini-key').value
+        },
+        statistics: {
+            projects: parseInt(document.getElementById('setting-stat-projects').value) || 0,
+            clients: parseInt(document.getElementById('setting-stat-clients').value) || 0,
+            materials: parseInt(document.getElementById('setting-stat-materials').value) || 0,
+            speed: parseInt(document.getElementById('setting-stat-speed').value) || 0
         }
     };
 
@@ -217,11 +231,11 @@ function renderMaterials() {
         item.innerHTML = `
             <div class="input-group">
                 <label>اسم المادة</label>
-                <input type="text" value="${mat.name}" onchange="updateMaterial(${index}, 'name', this.value)">
+                <input type="text" value="${(mat.name||'').replace(/"/g, '&quot;')}" onchange="updateMaterial(${index}, 'name', this.value)">
             </div>
             <div class="input-group">
                 <label>وصف المادة</label>
-                <textarea style="width:100%; height:60px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.05); color:white; border:1px solid var(--glass-border);" onchange="updateMaterial(${index}, 'description', this.value)">${mat.description}</textarea>
+                <textarea style="width:100%; height:60px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.05); color:white; border:1px solid var(--glass-border);" onchange="updateMaterial(${index}, 'description', this.value)">${(mat.description||'').replace(/</g, '&lt;')}</textarea>
             </div>
             <button class="btn" style="background: rgba(255,0,0,0.1); color:#ff4d4d; font-size:0.8rem; padding:5px 10px; width:auto;" onclick="removeMaterial(${index})">حذف</button>
         `;

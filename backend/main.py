@@ -123,7 +123,13 @@ DEFAULT_SETTINGS = {
     "materials": [
         {"name": "PLA", "description": "سهل الاستخدام ومثالي للنماذج الجمالية."},
         {"name": "PETG", "description": "قوي ومقاوم للحرارة، مناسب للأجزاء الميكانيكية."}
-    ]
+    ],
+    "statistics": {
+        "projects": 150,
+        "clients": 80,
+        "materials": 12,
+        "speed": 24
+    }
 }
 
 @app.get("/api/v1/settings")
@@ -141,6 +147,9 @@ async def get_site_settings():
         final_settings["materials"] = settings["materials"]
     else:
         final_settings["materials"] = DEFAULT_SETTINGS["materials"]
+
+    if "statistics" in settings and isinstance(settings["statistics"], dict):
+        final_settings["statistics"].update(settings["statistics"])
 
     # Safely remove sensitive info
     public_settings = {k: v for k, v in final_settings.items() if k != "admin"}
