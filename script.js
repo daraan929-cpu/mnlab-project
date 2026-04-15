@@ -4,9 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let dynamicGeminiKey = '';
 
-import * as THREE from 'three';
-
-/** MNLAB Logic v1.1.2 - Final Polish **/
+/** MNLAB Logic v1.2.0 - Clean Deployment **/
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- MNLAB Extreme Upgrade: 0. Helper Functions & Global State ---
