@@ -762,13 +762,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Apply Content
             if (settings.content) {
                 const heroTitle = document.querySelector('.hero-text h1');
-                if (heroTitle) heroTitle.textContent = settings.content.hero_title;
+                if (heroTitle && settings.content.hero_title) heroTitle.textContent = settings.content.hero_title;
 
                 const heroSubtitle = document.querySelector('.hero-text p');
-                if (heroSubtitle) heroSubtitle.textContent = settings.content.hero_subtitle;
+                if (heroSubtitle && settings.content.hero_subtitle) heroSubtitle.textContent = settings.content.hero_subtitle;
 
                 const footerPhone = document.querySelector('.contact-item i.fa-whatsapp + span') || document.querySelector('.contact-item span');
-                if (footerPhone) footerPhone.textContent = settings.content.contact_phone;
+                if (footerPhone && settings.content.contact_phone) footerPhone.textContent = settings.content.contact_phone;
 
                 const footerEmail = document.querySelector('.contact-item i.fa-envelope + span');
                 if (footerEmail) footerEmail.textContent = settings.content.contact_email;

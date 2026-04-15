@@ -141,7 +141,10 @@ async def get_site_settings():
     final_settings = DEFAULT_SETTINGS.copy()
     for key in ["colors", "content", "images"]:
         if key in settings and isinstance(settings[key], dict):
-            final_settings[key].update(settings[key])
+            # Only update if the value in DB is not an empty string or empty list
+            for subkey, val in settings[key].items():
+                if val is not None and val != "":
+                    final_settings[key][subkey] = val
     
     if "materials" in settings and isinstance(settings["materials"], list) and len(settings["materials"]) > 0:
         final_settings["materials"] = settings["materials"]
