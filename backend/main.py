@@ -176,6 +176,8 @@ async def update_site_settings(new_settings: Dict[str, Any], authenticated: bool
             current_settings[key] = {}
     if "materials" not in current_settings:
         current_settings["materials"] = []
+    if "statistics" not in current_settings:
+        current_settings["statistics"] = {}
             
     # Merge settings
     if "colors" in new_settings:
@@ -186,6 +188,8 @@ async def update_site_settings(new_settings: Dict[str, Any], authenticated: bool
         current_settings["images"].update(new_settings["images"])
     if "materials" in new_settings:
         current_settings["materials"] = new_settings["materials"]
+    if "statistics" in new_settings:
+        current_settings["statistics"].update(new_settings["statistics"])
     
     await storage.save_settings(current_settings)
     return {"status": "success", "message": "Settings updated"}

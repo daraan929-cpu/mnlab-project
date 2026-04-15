@@ -6,6 +6,7 @@ let dynamicGeminiKey = '';
 
 import * as THREE from 'three';
 
+/** MNLAB Logic v1.1.2 - Final Polish **/
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- MNLAB Extreme Upgrade: 0. Helper Functions & Global State ---
