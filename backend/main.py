@@ -113,8 +113,8 @@ DEFAULT_SETTINGS = {
     "content": {
         "contact_phone": "967737214666",
         "contact_email": "info@mnlab.com",
-        "hero_title": "مستقبل التصنيع الرقمي في اليمن",
-        "hero_subtitle": "نحول أفكارك إلى واقع ملموس بتقنيات الطباعة ثلاثية الأبعاد الأكثر تطوراً."
+        "hero_title": "حول أفكارك إلى واقع ملموس",
+        "hero_subtitle": "نقدم في MNLAB أفضل خدمات الطباعة ثلاثية الأبعاد بجودة احترافية ودقة عالية للنماذج الأولية والمنتجات النهائية."
     },
     "images": {
         "hero_image": "hero.png",
