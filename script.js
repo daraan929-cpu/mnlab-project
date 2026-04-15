@@ -8,8 +8,36 @@ let dynamicGeminiKey = '';
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- MNLAB Extreme Upgrade: 0. Helper Functions & Global State ---
+    const themeBtn = document.getElementById('theme-toggle');
+    const themeIcon = themeBtn ? themeBtn.querySelector('i') : null;
     let currentTheme = localStorage.getItem('mnlab_theme') || 'dark';
-    if (currentTheme === 'light') document.body.classList.add('light-theme');
+
+    function applyTheme(theme) {
+        if (theme === 'light') {
+            document.body.classList.add('light-theme');
+            if (themeIcon) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        } else {
+            document.body.classList.remove('light-theme');
+            if (themeIcon) {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+    }
+
+    applyTheme(currentTheme);
+
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('mnlab_theme', currentTheme);
+            applyTheme(currentTheme);
+        });
+    }
+
     // 1. Mobile Navigation Toggle
     const hamburger = document.querySelector('.hamburger');
     const navLinks = document.querySelector('.nav-links');
