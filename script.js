@@ -588,90 +588,46 @@ document.addEventListener('DOMContentLoaded', () => {
     async function generateAIResponse(userText, imageData = null) {
         showTypingIndicator();
 
-        const systemPrompt = "أنت 'مساعد MNLAB الذكي'، خبير في تقنيات الطباعة ثلاثية الأبعاد والتصنيع الرقمي، ولست مساعداً عاماً (مثل ChatGPT).\n\nحول MNLAB:\n1. الرائدون في اليمن في دمج الذكاء الاصطناعي مع التصنيع الرقمي.\n2. نطور خدمات ومنتجات رائدة في مجال التصنيع ثلاثي الأبعاد.\n\nإرشادات الرد:\n- تحدث باللغة العربية بأسلوب ودود ومحترف.\n- أجب بذكاء واحترافية فقط عن الأسئلة المتعلقة بالطباعة ثلاثية الأبعاد، التصنيع الرقمي، والخامات هندسة الميكانيكا، وخدمات موقع MNLAB.\n- إذا سألك المستخدم سؤالاً عاماً خارج نطاق المشروع (مثل كتابة برمجة، نكات، أو معلومات عامة لا تخص 3D)، يجب عليك أن تعتذر بذكاء ولطف شديد، وتوضح له أنك 'بوت مخصص فقط للإجابة وتقديم المساعدة في كل ما يخص الطباعة ثلاثية الأبعاد ومشروع MNLAB' ولا يمكنك تلبية طلبه بصفتك ممثلاً لشركة MNLAB.\n- رقم التواصل المباشر مع الدعم الفني: 967737214666.";
-
-        let newParts = [];
-        if (userText) newParts.push({ text: userText });
-        else if (imageData) newParts.push({ text: "ماذا ترى في هذه الصورة فيما يتعلق بالطباعة ثلاثية الأبعاد؟" });
-
-        if (imageData) {
-            newParts.push({
-                inlineData: {
-                    data: imageData.data,
-                    mimeType: imageData.mimeType
-                }
-            });
-        }
-
-        // Add to history
-        conversationHistory.push({
-            role: "user",
-            parts: newParts
-        });
-
         try {
-            const activeKey = dynamicGeminiKey || 'AIzaSyDHAQL7kdN6lNBcBok1eNB8dG7wwo6E6io';
+            // Send payload to our backend server
+            const payload = {
+                message: userText || "ماذا يوجد في هذه الصورة؟", // Default message for image only
+                history: conversationHistory.map(msg => ({
+                    role: msg.role,
+                    parts: msg.parts.map(p => ({ text: p.text || "" }))
+                }))
+            };
 
-            if (!activeKey || activeKey.includes('ضع_مفتاح')) {
-                throw new Error("API_KEY_MISSING");
-            }
-
-            // Ensure role alternation for Gemini API
-            let safeHistory = [];
-            let lastRole = null;
-            for (const msg of conversationHistory) {
-                if (msg.role !== lastRole) {
-                    safeHistory.push(msg);
-                    lastRole = msg.role;
-                }
-            }
-
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${activeKey}`, {
+            const response = await fetch(`${API_BASE}/api/v1/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    contents: safeHistory,
-                    systemInstruction: { parts: [{ text: systemPrompt }] },
-                    generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
-                })
+                body: JSON.stringify(payload)
             });
 
             if (!response.ok) {
-                const err = await response.json();
-                console.error("Gemini Error:", err);
-                throw new Error(err.error?.message || "SERVER_ERROR");
+                throw new Error(`Server Error: ${response.status}`);
             }
 
             const data = await response.json();
-            const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-            if (aiText) {
-                conversationHistory.push({ role: "model", parts: [{ text: aiText }] });
-                let formattedText = aiText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            
+            if (data.status === 'success' && data.response) {
+                // Add AI response to local history
+                conversationHistory.push({ role: "model", parts: [{ text: data.response }] });
+                let formattedText = data.response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
                 removeTypingIndicator();
                 addAIMessage(formattedText);
             } else {
-                throw new Error("EMPTY_RESPONSE");
+                throw new Error("Invalid response from backend");
             }
+
         } catch (error) {
             removeTypingIndicator();
             console.error('Chatbot Error:', error);
-            // Rollback last user message if it failed to avoid breaking alternation next time
             if (conversationHistory.length > 0 && conversationHistory[conversationHistory.length-1].role === 'user') {
                 conversationHistory.pop();
             }
             
-            let userFriendlyMsg = "حدث خطأ في الاتصال بالذكاء الاصطناعي. يرجى المحاولة بعد قليل.";
-            if (error.message === "API_KEY_MISSING") {
-                userFriendlyMsg = "عذراً، مفتاح API الخاص بـ Gemini غير متوفر أو غير صالح.";
-            } else if (error.message.includes("API key not valid")) {
-                userFriendlyMsg = "مفتاح الـ API غير صالح. يرجى التحقق من لوحة التحكم.";
-            } else if (error.message.includes("exceeded") || error.message.includes("quota") || error.message.includes("429")) {
-                userFriendlyMsg = "يبدو أن هناك ضغطاً حالياً على الخادم (كثرة الطلبات)، يرجى الانتظار دقيقة والمحاولة ثانية.";
-            } else if (error.message.includes("Failed to fetch") || error.message.includes("NetworkError")) {
-                userFriendlyMsg = "مشكلة في الاتصال بالإنترنت، يرجى التأكد من شبكتك والمحاولة مجدداً.";
-            }
-            
+            let userFriendlyMsg = "عذراً، واجهت مشكلة في الاتصال بمحرك الذكاء الاصطناعي. الرجاء المحاولة لاحقاً.";
             addAIMessage(userFriendlyMsg + " <br><small>(الخطأ التقني: " + error.message + ")</small>");
         }
     }
