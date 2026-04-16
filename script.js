@@ -525,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // AI Integration (Google Gemini API)
-    dynamicGeminiKey = 'AIzaSyDHAQL7kdN6lNBcBok1eNB8dG7wwo6E6io'; // Default fallback
+    dynamicGeminiKey = 'AIzaSyCwaOKA4aXO1ZDMUCINh5gXJtdI_Y+KoKo'; 
     
     // Maintain conversation history
     let conversationHistory = [];
@@ -1138,130 +1138,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     initDynamicQR();
 
-    // --- 17. MNLAB AI Chat Assistant Logic ---
-    let chatHistory = [];
-    const chatWindow = document.getElementById('chatWindow');
-    const chatMessages = document.getElementById('chatMessages');
-    const chatInput = document.getElementById('chatInput');
-    const chatBadge = document.querySelector('.chat-badge');
-
-    window.toggleChatbot = function() {
-        if (!chatWindow) return;
-        const isOpen = chatWindow.classList.contains('open');
-        
-        if (!isOpen) {
-            chatWindow.classList.add('open');
-            chatInput.focus();
-            if (chatBadge) chatBadge.style.display = 'none'; // Clear notification
-            if (chatMessages.children.length <= 1) { // Only initial message exists
-                // The initial message is already in HTML, but we can add more if needed
-            }
-        } else {
-            chatWindow.classList.remove('open');
-        }
-    };
-
-    window.addMessageToChat = function(role, text) {
-        const msgDiv = document.createElement('div');
-        msgDiv.className = `chat-message ${role === 'user' ? 'user-message' : 'ai-message'}`;
-        msgDiv.innerHTML = `<p>${escapeHTML(text)}</p>`;
-        chatMessages.appendChild(msgDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    };
-
-    window.handleChatKeyPress = function(e) {
-        if (e.key === 'Enter') sendChatMessage();
-    };
-
-    window.sendChatMessage = async function() {
-        const text = chatInput.value.trim();
-        if (!text) return;
-
-        addMessageToChat('user', text);
-        chatInput.value = '';
-
-        // Show typing indicator
-        const typingDiv = document.createElement('div');
-        typingDiv.className = 'typing-indicator ai-message';
-        typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-        chatMessages.appendChild(typingDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-
-        try {
-            const resp = await fetch(`${API_BASE}/api/v1/chat`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: text, history: chatHistory })
-            });
-            const data = await resp.json();
-            
-            chatMessages.removeChild(typingDiv);
-            if (data.status === 'success') {
-                addMessageToChat('bot', data.response);
-                chatHistory.push({ role: 'user', content: text });
-                chatHistory.push({ role: 'model', content: data.response });
-            } else {
-                addMessageToChat('bot', 'عذراً، واجهت مشكلة في الاتصال بمحرك الذكاء الاصطناعي.');
-            }
-        } catch (err) {
-            if (typingDiv.parentNode) chatMessages.removeChild(typingDiv);
-            addMessageToChat('bot', 'خطأ في الشبكة. تأكد من تشغيل السيرفر.');
-        }
-    };
-
-    window.handleImageSelection = function(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const previewArea = document.getElementById('chatPreviewArea');
-        const previewImg = document.getElementById('chatPreviewImage');
-        
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            previewImg.src = e.target.result;
-            previewArea.style.display = 'flex';
-        };
-        reader.readAsDataURL(file);
-    };
-
-    window.toggleVoiceRecord = function() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            alert("متصفحك لا يدعم التعرف على الصوت. يرجى استخدام Chrome.");
-            return;
-        }
-
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'ar-SA';
-        recognition.start();
-
-        const micBtn = document.getElementById('micBtn');
-        if (micBtn) micBtn.style.color = 'var(--accent-1)';
-        
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            chatInput.value = transcript;
-            if (micBtn) micBtn.style.color = '';
-        };
-
-        recognition.onerror = () => {
-            if (micBtn) micBtn.style.color = '';
-        };
-    };
-
-    // Helper to close preview
-    const closePreviewBtn = document.querySelector('.close-preview');
-    if (closePreviewBtn) {
-        closePreviewBtn.addEventListener('click', () => {
-            document.getElementById('chatPreviewArea').style.display = 'none';
-            document.getElementById('chatImageInput').value = '';
-        });
-    }
-
     function escapeHTML(str) {
         if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+        return str.replace(/[&<>"']/g, function(m) {
+            return {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[m];
+        });
     }
 
 });
