@@ -46,15 +46,34 @@ vision_system = AdvancedVisionSystem2026()
 face_verification = SecureFaceVerification()
 home_mixer = HomeMixerX()
 
+async def get_configured_ai():
+    settings = await storage.get_settings()
+    api_key = settings.get("content", {}).get("gemini_api_key") or os.getenv("GOOGLE_API_KEY")
+    vision_system.configure(api_key)
+    return vision_system.ai
+
+@app.post("/api/v1/chat")
+async def chat_assistant(data: Dict[str, Any]):
+    """
+    AI Chat Assistant powered by Google Gemini.
+    """
+    message = data.get("message")
+    history = data.get("history", [])
+    if not message:
+        raise HTTPException(status_code=400, detail="Missing message")
+    
+    ai = await get_configured_ai()
+    response = await ai.chat(message, history)
+    return {"status": "success", "response": response}
+
 @app.post("/api/v1/analyze_scene")
 async def analyze_scene(file: UploadFile = File(...)):
     """
-    Analyzes an uploaded image using YOLOv9, EfficientNetV3, and Privacy-Preserving FaceNet.
-    Outputs the objects detected, scene understanding, and spatial map.
+    Analyzes an uploaded image using real Gemini vision or mock.
     """
     content = await file.read()
-    # In a real scenario, convert 'content' to an image tensor
-    results = vision_system.analyze_scene(content)
+    await get_configured_ai() # Refresh config
+    results = await vision_system.analyze_scene(content)
     return {"status": "success", "data": results}
 
 @app.post("/api/v1/verify_identity")

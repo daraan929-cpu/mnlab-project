@@ -1138,17 +1138,124 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     initDynamicQR();
 
+    // --- 17. MNLAB AI Chat Assistant Logic ---
+    let chatHistory = [];
+    const chatModal = document.getElementById('chatModal');
+    const chatBody = document.getElementById('chatBody');
+    const chatInput = document.getElementById('chatInput');
+
+    window.toggleChat = function() {
+        if (!chatModal) return;
+        const isHidden = chatModal.style.display === 'none' || !chatModal.style.display;
+        chatModal.style.display = isHidden ? 'flex' : 'none';
+        if (isHidden) {
+            chatInput.focus();
+            if (chatBody.children.length === 0) {
+                addMessageToChat('bot', 'مرحباً بك في MNLAB! أنا مساعدك الذكي، كيف يمكنني مساعدتك اليوم في مشاريع الطباعة ثلاثية الأبعاد؟');
+            }
+        }
+    };
+
+    window.addMessageToChat = function(role, text) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `chat-message ${role}`;
+        msgDiv.innerHTML = `<div class="message-content">${escapeHTML(text)}</div>`;
+        chatBody.appendChild(msgDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    };
+
+    window.handleChatKeyPress = function(e) {
+        if (e.key === 'Enter') sendChatMessage();
+    };
+
+    window.sendChatMessage = async function() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+
+        addMessageToChat('user', text);
+        chatInput.value = '';
+
+        // Show typing indicator
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'chat-message bot typing';
+        typingDiv.innerHTML = '<div class="message-content"><i class="fas fa-ellipsis-h fa-beat"></i></div>';
+        chatBody.appendChild(typingDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        try {
+            const resp = await fetch(`${API_BASE}/api/v1/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text, history: chatHistory })
+            });
+            const data = await resp.json();
+            
+            chatBody.removeChild(typingDiv);
+            if (data.status === 'success') {
+                addMessageToChat('bot', data.response);
+                chatHistory.push({ role: 'user', content: text });
+                chatHistory.push({ role: 'model', content: data.response });
+            } else {
+                addMessageToChat('bot', 'عذراً، واجهت مشكلة في الاتصال بمحرك الذكاء الاصطناعي.');
+            }
+        } catch (err) {
+            chatBody.removeChild(typingDiv);
+            addMessageToChat('bot', 'خطأ في الشبكة. تأكد من تشغيل السيرفر.');
+        }
+    };
+
+    window.handleImageSelection = function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const previewArea = document.getElementById('chatPreviewArea');
+        const previewImg = document.getElementById('chatPreviewImage');
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewArea.style.display = 'flex';
+        };
+        reader.readAsDataURL(file);
+    };
+
+    window.toggleVoiceRecord = function() {
+        if (!('webkitSpeechRecognition' in window)) {
+            alert("متصفحك لا يدعم التعرف على الصوت. يرجى استخدام Chrome.");
+            return;
+        }
+
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = 'ar-SA';
+        recognition.start();
+
+        const micBtn = document.getElementById('micBtn');
+        micBtn.style.color = 'var(--accent-1)';
+        
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            chatInput.value = transcript;
+            micBtn.style.color = '';
+        };
+
+        recognition.onerror = () => {
+            micBtn.style.color = '';
+        };
+    };
+
+    // Helper to close preview
+    const closePreviewBtn = document.querySelector('.close-preview');
+    if (closePreviewBtn) {
+        closePreviewBtn.addEventListener('click', () => {
+            document.getElementById('chatPreviewArea').style.display = 'none';
+            document.getElementById('chatImageInput').value = '';
+        });
+    }
+
     function escapeHTML(str) {
         if (!str) return '';
-        return str.replace(/[&<>"']/g, function(m) {
-            return {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#39;'
-            }[m];
-        });
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     }
 
 });
