@@ -1140,28 +1140,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 17. MNLAB AI Chat Assistant Logic ---
     let chatHistory = [];
-    const chatModal = document.getElementById('chatModal');
-    const chatBody = document.getElementById('chatBody');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatMessages = document.getElementById('chatMessages');
     const chatInput = document.getElementById('chatInput');
+    const chatBadge = document.querySelector('.chat-badge');
 
-    window.toggleChat = function() {
-        if (!chatModal) return;
-        const isHidden = chatModal.style.display === 'none' || !chatModal.style.display;
-        chatModal.style.display = isHidden ? 'flex' : 'none';
-        if (isHidden) {
+    window.toggleChatbot = function() {
+        if (!chatWindow) return;
+        const isOpen = chatWindow.classList.contains('open');
+        
+        if (!isOpen) {
+            chatWindow.classList.add('open');
             chatInput.focus();
-            if (chatBody.children.length === 0) {
-                addMessageToChat('bot', 'مرحباً بك في MNLAB! أنا مساعدك الذكي، كيف يمكنني مساعدتك اليوم في مشاريع الطباعة ثلاثية الأبعاد؟');
+            if (chatBadge) chatBadge.style.display = 'none'; // Clear notification
+            if (chatMessages.children.length <= 1) { // Only initial message exists
+                // The initial message is already in HTML, but we can add more if needed
             }
+        } else {
+            chatWindow.classList.remove('open');
         }
     };
 
     window.addMessageToChat = function(role, text) {
         const msgDiv = document.createElement('div');
-        msgDiv.className = `chat-message ${role}`;
-        msgDiv.innerHTML = `<div class="message-content">${escapeHTML(text)}</div>`;
-        chatBody.appendChild(msgDiv);
-        chatBody.scrollTop = chatBody.scrollHeight;
+        msgDiv.className = `chat-message ${role === 'user' ? 'user-message' : 'ai-message'}`;
+        msgDiv.innerHTML = `<p>${escapeHTML(text)}</p>`;
+        chatMessages.appendChild(msgDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 
     window.handleChatKeyPress = function(e) {
@@ -1177,10 +1182,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Show typing indicator
         const typingDiv = document.createElement('div');
-        typingDiv.className = 'chat-message bot typing';
-        typingDiv.innerHTML = '<div class="message-content"><i class="fas fa-ellipsis-h fa-beat"></i></div>';
-        chatBody.appendChild(typingDiv);
-        chatBody.scrollTop = chatBody.scrollHeight;
+        typingDiv.className = 'typing-indicator ai-message';
+        typingDiv.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+        chatMessages.appendChild(typingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
         try {
             const resp = await fetch(`${API_BASE}/api/v1/chat`, {
@@ -1190,7 +1195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await resp.json();
             
-            chatBody.removeChild(typingDiv);
+            chatMessages.removeChild(typingDiv);
             if (data.status === 'success') {
                 addMessageToChat('bot', data.response);
                 chatHistory.push({ role: 'user', content: text });
@@ -1199,7 +1204,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 addMessageToChat('bot', 'عذراً، واجهت مشكلة في الاتصال بمحرك الذكاء الاصطناعي.');
             }
         } catch (err) {
-            chatBody.removeChild(typingDiv);
+            if (typingDiv.parentNode) chatMessages.removeChild(typingDiv);
             addMessageToChat('bot', 'خطأ في الشبكة. تأكد من تشغيل السيرفر.');
         }
     };
@@ -1219,26 +1224,27 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.toggleVoiceRecord = function() {
-        if (!('webkitSpeechRecognition' in window)) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
             alert("متصفحك لا يدعم التعرف على الصوت. يرجى استخدام Chrome.");
             return;
         }
 
-        const recognition = new webkitSpeechRecognition();
+        const recognition = new SpeechRecognition();
         recognition.lang = 'ar-SA';
         recognition.start();
 
         const micBtn = document.getElementById('micBtn');
-        micBtn.style.color = 'var(--accent-1)';
+        if (micBtn) micBtn.style.color = 'var(--accent-1)';
         
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
             chatInput.value = transcript;
-            micBtn.style.color = '';
+            if (micBtn) micBtn.style.color = '';
         };
 
         recognition.onerror = () => {
-            micBtn.style.color = '';
+            if (micBtn) micBtn.style.color = '';
         };
     };
 
