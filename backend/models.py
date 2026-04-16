@@ -18,8 +18,8 @@ class GeminiAI:
             return
         self.api_key = api_key
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
-        self.vision_model = genai.GenerativeModel('gemini-1.5-flash')
+        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.vision_model = genai.GenerativeModel('gemini-2.5-flash')
 
     async def chat(self, message: str, history: List[Dict] = None) -> str:
         if not self.model:
