@@ -42,20 +42,48 @@ class GeminiAI:
             return
         self.api_key = api_key
         genai.configure(api_key=api_key)
+        generation_config = genai.GenerationConfig(
+            temperature=0.8,
+            max_output_tokens=2048,
+            top_p=0.95,
+            top_k=40
+        )
         system_instruction = MNLAB_SYSTEM_PROMPT
-        self.model = genai.GenerativeModel('gemini-2.5-flash', system_instruction=system_instruction)
-        self.vision_model = genai.GenerativeModel('gemini-2.5-flash', system_instruction=system_instruction)
+        self.model = genai.GenerativeModel(
+            'gemini-2.5-flash',
+            system_instruction=system_instruction,
+            generation_config=generation_config
+        )
+        self.vision_model = genai.GenerativeModel(
+            'gemini-2.5-flash',
+            system_instruction=system_instruction,
+            generation_config=generation_config
+        )
 
     async def chat(self, message: str, history: List[Dict] = None) -> str:
         if not self.model:
             return "عذراً، نظام الذكاء الاصطناعي في وضع الصيانة أو لم يتم ضبط مفتاح الـ API بعد."
         
         try:
-            chat_session = self.model.start_chat(history=history or [])
+            # Sanitize history: ensure roles alternate user/model properly
+            safe_history = []
+            last_role = None
+            for msg in (history or []):
+                role = msg.get('role', '')
+                if role in ('user', 'model') and role != last_role:
+                    parts = msg.get('parts', [])
+                    # Filter out empty parts
+                    clean_parts = [p for p in parts if p.get('text', '').strip()]
+                    if clean_parts:
+                        safe_history.append({'role': role, 'parts': clean_parts})
+                        last_role = role
+
+            chat_session = self.model.start_chat(history=safe_history)
             response = await chat_session.send_message_async(message)
             return response.text
         except Exception as e:
             return f"حدث خطأ أثناء معالجة طلبك: {str(e)}"
+
 
     async def analyze_image(self, image_bytes: bytes, prompt: str) -> str:
         if not self.vision_model:
