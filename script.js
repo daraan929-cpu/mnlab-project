@@ -1,7 +1,4 @@
-import * as THREE from 'three';
-import { STLLoader } from 'three/addons/loaders/STLLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
+// Three.js will be dynamically loaded when needed to prevent blocking UI loading
 let dynamicGeminiKey = '';
 
 /** MNLAB Logic v1.2.0 - Clean Deployment **/
@@ -928,8 +925,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 3D Viewer & Pricing Logic ---
     let threeRenderer, threeScene, threeCamera, threeControls;
 
+    // Dynamic Three.js references
+    let THREE, STLLoader, OrbitControls;
+
+    async function loadThree() {
+        if (THREE) return;
+        THREE = await import('three');
+        const stlAddon = await import('three/addons/loaders/STLLoader.js');
+        STLLoader = stlAddon.STLLoader;
+        const orbitAddon = await import('three/addons/controls/OrbitControls.js');
+        OrbitControls = orbitAddon.OrbitControls;
+    }
+
     async function init3DPreview() {
         if (threeRenderer) return;
+        await loadThree();
         const container = document.getElementById('threejs-container');
         threeScene = new THREE.Scene();
         threeScene.background = new THREE.Color(0x0a0a0f);
