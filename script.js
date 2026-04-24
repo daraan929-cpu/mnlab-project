@@ -525,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // AI Integration (Google Gemini API)
-    dynamicGeminiKey = 'AIzaSyCwa0KA4aXO1ZDMUCINh5gXJtdI_Y+KoKo'; 
+    dynamicGeminiKey = ''; 
     
     // Maintain conversation history
     let conversationHistory = [];
